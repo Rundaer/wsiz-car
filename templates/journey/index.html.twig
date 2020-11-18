@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Journeys!{% endblock %}
+
+{% block body %}
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Owner</th>
+            <th scope="col">Description</th>
+            <th scope="col">Departure</th>
+            <th scope="col">Arrival</th>
+            <th scope="col">From</th>
+            <th scope="col">To</th>
+            <th scope="col">Person limit</th>
+            <th scope="col">Seats left</th>
+            <th scope="col">Contribution</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for journey in journeys %}
+            <tr>
+                <th scope="row">{{ journey.id }}</th>
+                <td>{{ journey.owner.username }}</td>
+                <td>{{ journey.description }}</td>
+                <td>{{ journey.departureTime | date("Y-m-d H:i:s")}}</td>
+                <td>{{ journey.arrivalTime | date("Y-m-d H:i:s")}}</td>
+                <td>{{ journey.startLocation }}</td>
+                <td>{{ journey.finishLocation }}</td>
+                <td>{{ journey.personLimit }}</td>
+                <td>-- 0 --</td>
+                <td>{{ journey.contribution }}</td>
+                <td> actions </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
