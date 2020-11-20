@@ -46,6 +46,11 @@ class User implements UserInterface
      */
     private $username;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Car::class, mappedBy="owner", cascade={"persist", "remove"})
+     */
+    private $car;
+
     public function __construct()
     {
         $this->journeys = new ArrayCollection();
@@ -162,6 +167,23 @@ class User implements UserInterface
     public function setUsername(string $username): self
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    public function getCar(): ?Car
+    {
+        return $this->car;
+    }
+
+    public function setCar(Car $car): self
+    {
+        $this->car = $car;
+
+        // set the owning side of the relation if necessary
+        if ($car->getOwner() !== $this) {
+            $car->setOwner($this);
+        }
 
         return $this;
     }
