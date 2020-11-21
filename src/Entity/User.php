@@ -37,11 +37,6 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity=Journey::class, mappedBy="owner")
-     */
-    private $journeys;
-
-    /**
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private $username;
@@ -51,9 +46,15 @@ class User implements UserInterface
      */
     private $car;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Journey::class, mappedBy="Owner", orphanRemoval=true)
+     */
+    private $journeys_owner;
+
     public function __construct()
     {
         $this->journeys = new ArrayCollection();
+        $this->journeys_owner = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -134,36 +135,6 @@ class User implements UserInterface
         // $this->plainPassword = null;
     }
 
-    /**
-     * @return Collection|Journey[]
-     */
-    public function getJourneys(): Collection
-    {
-        return $this->journeys;
-    }
-
-    public function addJourney(Journey $journey): self
-    {
-        if (!$this->journeys->contains($journey)) {
-            $this->journeys[] = $journey;
-            $journey->setOwner($this);
-        }
-
-        return $this;
-    }
-
-    public function removeJourney(Journey $journey): self
-    {
-        if ($this->journeys->removeElement($journey)) {
-            // set the owning side to null (unless already changed)
-            if ($journey->getOwner() === $this) {
-                $journey->setOwner(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function setUsername(string $username): self
     {
         $this->username = $username;
@@ -183,6 +154,36 @@ class User implements UserInterface
         // set the owning side of the relation if necessary
         if ($car->getOwner() !== $this) {
             $car->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Journey[]
+     */
+    public function getJourneysOwner(): Collection
+    {
+        return $this->journeys_owner;
+    }
+
+    public function addJourneysOwner(Journey $journeysOwner): self
+    {
+        if (!$this->journeys_owner->contains($journeysOwner)) {
+            $this->journeys_owner[] = $journeysOwner;
+            $journeysOwner->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJourneysOwner(Journey $journeysOwner): self
+    {
+        if ($this->journeys_owner->removeElement($journeysOwner)) {
+            // set the owning side to null (unless already changed)
+            if ($journeysOwner->getOwner() === $this) {
+                $journeysOwner->setOwner(null);
+            }
         }
 
         return $this;

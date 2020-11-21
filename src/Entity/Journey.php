@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\JourneyRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -53,10 +55,20 @@ class Journey
     private $contribution;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="journeys")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="journeys_owner")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $owner;
+    private $Owner;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class)
+     */
+    private $participants;
+
+    public function __construct()
+    {
+        $this->participants = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -149,12 +161,36 @@ class Journey
 
     public function getOwner(): ?User
     {
-        return $this->owner;
+        return $this->Owner;
     }
 
-    public function setOwner(?User $owner): self
+    public function setOwner(?User $Owner): self
     {
-        $this->owner = $owner;
+        $this->Owner = $Owner;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getParticipants(): Collection
+    {
+        return $this->participants;
+    }
+
+    public function addParticipant(User $participant): self
+    {
+        if (!$this->participants->contains($participant)) {
+            $this->participants[] = $participant;
+        }
+
+        return $this;
+    }
+
+    public function removeParticipant(User $participant): self
+    {
+        $this->participants->removeElement($participant);
 
         return $this;
     }
